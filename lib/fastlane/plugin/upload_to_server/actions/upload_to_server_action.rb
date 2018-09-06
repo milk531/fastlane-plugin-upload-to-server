@@ -22,8 +22,8 @@ module Fastlane
         UI.user_error!("No IPA or APK file path given, pass using `ipa: 'ipa path'` or `apk: 'apk path'`") if ipa_file.to_s.length == 0 && apk_file.to_s.length == 0
         UI.user_error!("Please only give IPA path or APK path (not both)") if ipa_file.to_s.length > 0 && apk_file.to_s.length > 0
 
-        upload_apk(params, apk_file) if apk_file.to_s.length > 0
-        upload_ipa(params, ipa_file) if ipa_file.to_s.length > 0
+        return upload_apk(params, apk_file) if apk_file.to_s.length > 0
+        return upload_ipa(params, ipa_file) if ipa_file.to_s.length > 0
       end
 
       def self.upload_apk(params, apk_file)
@@ -32,7 +32,7 @@ module Fastlane
         multipart_payload[:multipart] = true
         multipart_payload[:file] = File.new(params[:apk], 'rb')
 
-        upload_file(params, multipart_payload)
+        return upload_file(params, multipart_payload)
       end
 
       def self.upload_ipa(params, ipa_file)
@@ -41,7 +41,7 @@ module Fastlane
         multipart_payload[:multipart] = true
         multipart_payload[:file] = File.new(params[:ipa], 'rb')
 
-        upload_file(params, multipart_payload)
+        return upload_file(params, multipart_payload)
       end
 
       def self.upload_file(params, multipart_payload)
@@ -56,7 +56,7 @@ module Fastlane
         response = request.execute
         UI.message(response)
         UI.success("Successfully finished uploading the fille") if response.code == 200 || response.code == 201
-        response.body
+        return response.body
       end
 
       def self.description
